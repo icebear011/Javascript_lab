@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            width: 320px;
+            text-align: center;
+        }
+
+        input {
+            width: 85%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Palindrome Checker - 24070521240</h2>
+        <input type="text" id="userInput" placeholder="Enter word or phrase">
+        <br>
+        <button onclick="handleCheck()">Check</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 1. GLOBAL SCOPE
+        const appTitle = "Palindrome Checker App";
+
+        // 2. CLOSURE (remembers total check count across function calls)
+        function createCounter() {
+            let count = 0; // Outer scope variable preserved by closure
+            return function () {
+                count++;
+                return count;
+            };
+        }
+        const getNextCount = createCounter();
+
+        // 3. FUNCTION TYPES
+        // Arrow Function Type: Cleans input string
+        const cleanString = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        // Function Expression Type: Validates input
+        const validateInput = function (text) {
+            if (!text || text.trim() === '') {
+                throw new Error("Input cannot be empty!");
+            }
+        };
+
+        // Function Declaration Type: Main click handler
+        function handleCheck() {
+            // BLOCK / LOCAL SCOPE
+            const inputVal = document.getElementById("userInput").value;
+            const resultDiv = document.getElementById("result");
+
+            // 4. TRY...CATCH BLOCK
+            try {
+                // Validate input (throws error if empty)
+                validateInput(inputVal);
+
+                // Local processing variables
+                const cleaned = cleanString(inputVal);
+                const reversed = cleaned.split('').reverse().join('');
+                const isPalindrome = (cleaned === reversed);
+
+                // Using closure
+                const currentCheckNum = getNextCount();
+
+                if (isPalindrome) {
+                    resultDiv.style.color = "green";
+                    resultDiv.textContent = `"${inputVal}" is a palindrome! (Check #${currentCheckNum})`;
+                } else {
+                    resultDiv.style.color = "red";
+                    resultDiv.textContent = `"${inputVal}" is NOT a palindrome. (Check #${currentCheckNum})`;
+                }
+
+            } catch (error) {
+                // Catching thrown exception
+                resultDiv.style.color = "orange";
+                resultDiv.textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+
+</html>

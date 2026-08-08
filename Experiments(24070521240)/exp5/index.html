@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Shopping Cart Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+      margin-top: 10px;
+    }
+
+    .summary {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Shopping Cart Calculator - 24070521240</h2>
+
+  <div>
+    <input type="text" id="itemName" placeholder="Item Name">
+    <input type="number" id="itemPrice" placeholder="Price">
+    <input type="number" id="itemQty" placeholder="Quantity">
+    <button onclick="addItem()">Add Item</button>
+  </div>
+
+  <div style="margin-top: 10px;">
+    <label for="discount">Discount (%): </label>
+    <input type="number" id="discount" value="0" min="0" max="100" oninput="updateCartUI()">
+  </div>
+
+  <h3>Cart Items</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="cartTable"></tbody>
+  </table>
+
+  <div class="summary">
+    <p>Subtotal: $<span id="subtotal">0.00</span></p>
+    <p>Discount Amount: $<span id="discountAmt">0.00</span></p>
+    <p>Grand Total: $<span id="grandTotal">0.00</span></p>
+  </div>
+
+  <script>
+    // Array to store cart item objects
+    let cart = [];
+
+    // Add item (Object creation & Array push)
+    function addItem() {
+      const name = document.getElementById('itemName').value;
+      const price = parseFloat(document.getElementById('itemPrice').value);
+      const qty = parseInt(document.getElementById('itemQty').value);
+
+      if (!name || isNaN(price) || isNaN(qty) || price <= 0 || qty <= 0) {
+        alert("Please enter valid item details");
+        return;
+      }
+
+      // Object handling: create an item object
+      const item = {
+        id: Date.now(),
+        name: name,
+        price: price,
+        quantity: qty
+      };
+
+      cart.push(item);
+
+      // Reset input fields
+      document.getElementById('itemName').value = '';
+      document.getElementById('itemPrice').value = '';
+      document.getElementById('itemQty').value = '';
+
+      updateCartUI();
+    }
+
+    // Array method: filter() to delete an item
+    function removeItem(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartUI();
+    }
+
+    // Update UI and calculate total using Array methods (map, reduce)
+    function updateCartUI() {
+      const tbody = document.getElementById('cartTable');
+      tbody.innerHTML = '';
+
+      // Array method: map() to build table rows
+      cart.map(item => {
+        const row = document.createElement('tr');
+        const itemTotal = item.price * item.quantity;
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>${item.quantity}</td>
+          <td>$${itemTotal.toFixed(2)}</td>
+          <td><button onclick="removeItem(${item.id})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // Array method: reduce() to compute subtotal
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      // Discount logic
+      const discountPercent = parseFloat(document.getElementById('discount').value) || 0;
+      const discountAmount = (subtotal * discountPercent) / 100;
+      const grandTotal = subtotal - discountAmount;
+
+      // Update total values in DOM
+      document.getElementById('subtotal').innerText = subtotal.toFixed(2);
+      document.getElementById('discountAmt').innerText = discountAmount.toFixed(2);
+      document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+    }
+  </script>
+
+</body>
+
+</html>

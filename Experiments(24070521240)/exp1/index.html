@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 1 - JavaScript Demo</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Internal JavaScript -->
+  <script>
+    console.log("Internal JS: Page is loading...");
+
+    function displayWelcome() {
+      document.getElementById("welcome").innerText = "Welcome to the User Portal!";
+      console.info("Internal JS: Welcome message set on page load.");
+    }
+  </script>
+</head>
+
+<body onload="displayWelcome()">
+
+  <h2>User Information</h2>
+
+  <div class="info-box">
+    <p><b>Name:</b> Atharva</p>
+    <p><b>PRN:</b> 24070521240</p>
+    <p id="welcome"></p>
+  </div>
+
+  <h3>Inline JS Test</h3>
+  <!-- Inline JavaScript -->
+  <button onclick="console.warn('Inline JS: Button clicked'); alert('Inline JS Executed!');">
+    Click for Inline JS
+  </button>
+
+  <!-- External JavaScript -->
+  <script src="script.js"></script>
+</body>
+
+</html>

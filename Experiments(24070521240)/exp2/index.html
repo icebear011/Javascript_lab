@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px auto;
+            max-width: 500px;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        .calculator {
+            background: #ffffff;
+            padding: 24px;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        h2,
+        h3 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 9px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        .btn-add:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .btn-calc:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-remove:hover {
+            background-color: #c82333;
+        }
+
+        .bill-result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+        <h2>Smart Billing Calculator - 24070521240</h2>
+
+        <!-- Input Form -->
+        <div class="input-group">
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" placeholder="e.g. Notebook">
+        </div>
+
+        <div class="input-group">
+            <label for="price">Price ($):</label>
+            <input type="number" id="price" placeholder="e.g. 15.50" step="0.01">
+        </div>
+
+        <div class="input-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" placeholder="e.g. 2" min="1">
+        </div>
+
+        <button class="btn-add" onclick="addItem()">+ Add Item</button>
+
+        <!-- Added Items Table -->
+        <h3>Item List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="itemsTableBody">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #777;">No items added yet.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn-calc" onclick="calculateBill()">Calculate Total Bill</button>
+
+        <!-- Final Bill Receipt -->
+        <div id="result" class="bill-result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // 1. Demonstration of var (Global Store Variables)
+        var storeName = "Campus Stationery & Supplies";
+        var itemsList = [];
+
+        // Add item function
+        function addItem() {
+            const nameInput = document.getElementById('itemName').value;
+            const priceInput = parseFloat(document.getElementById('price').value);
+            const qtyInput = parseInt(document.getElementById('quantity').value);
+
+            if (!nameInput || isNaN(priceInput) || isNaN(qtyInput) || qtyInput <= 0) {
+                alert("Please enter valid item name, price, and quantity!");
+                return;
+            }
+
+            // Create item object
+            const itemObj = {
+                name: nameInput,
+                price: priceInput,
+                qty: qtyInput
+            };
+
+            // Push to global array
+            itemsList.push(itemObj);
+
+            // Clear inputs
+            document.getElementById('itemName').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('quantity').value = '';
+
+            // Update UI table
+            renderTable();
+        }
+
+        // Render table rows
+        function renderTable() {
+            const tableBody = document.getElementById('itemsTableBody');
+
+            if (itemsList.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #777;">No items added yet.</td></tr>`;
+                return;
+            }
+
+            // 2. Demonstration of let (Loop accumulator)
+            let tableHTML = "";
+
+            for (let i = 0; i < itemsList.length; i++) {
+                // 3. Demonstration of Object Destructuring
+                const { name, price, qty } = itemsList[i];
+
+                let itemTotal = price * qty;
+
+                // 4. Demonstration of Template Literals
+                tableHTML += `
+                    <tr>
+                        <td>${name}</td>
+                        <td>$${price.toFixed(2)}</td>
+                        <td>${qty}</td>
+                        <td>$${itemTotal.toFixed(2)}</td>
+                        <td><button class="btn-remove" onclick="removeItem(${i})">X</button></td>
+                    </tr>
+                `;
+            }
+
+            tableBody.innerHTML = tableHTML;
+        }
+
+        // Remove single item
+        function removeItem(index) {
+            itemsList.splice(index, 1);
+            renderTable();
+        }
+
+        // Calculate final total bill
+        function calculateBill() {
+            if (itemsList.length === 0) {
+                alert("Add at least one item before calculating!");
+                return;
+            }
+
+            // 5. Demonstration of const
+            const TAX_RATE = 0.10;      // 10% Tax
+            const DISCOUNT_RATE = 0.05; // 5% Discount
+
+            // 6. Demonstration of Array Destructuring
+            const rates = [TAX_RATE * 100, DISCOUNT_RATE * 100];
+            const [taxPercent, discountPercent] = rates;
+
+            let subtotal = 0;
+
+            // Calculate subtotal using destructuring inside loop
+            for (let item of itemsList) {
+                const { price, qty } = item;
+                subtotal += price * qty;
+            }
+
+            let taxAmount = subtotal * TAX_RATE;
+            let discountAmount = subtotal * DISCOUNT_RATE;
+            let grandTotal = subtotal + taxAmount - discountAmount;
+
+            // Template literal for Receipt HTML
+            const billHTML = `
+                <h3>${storeName}</h3>
+                <p><b>Total Items:</b> ${itemsList.length}</p>
+                <hr>
+                <p><b>Subtotal:</b> $${subtotal.toFixed(2)}</p>
+                <p><b>Tax (${taxPercent}%):</b> +$${taxAmount.toFixed(2)}</p>
+                <p><b>Discount (${discountPercent}%):</b> -$${discountAmount.toFixed(2)}</p>
+                <hr>
+                <h4><b>Grand Total:</b> $${grandTotal.toFixed(2)}</h4>
+            `;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = billHTML;
+            resultDiv.style.display = 'block';
+
+            // Console log using template literal
+            console.log(`[Bill Generated] ${itemsList.length} items. Grand Total: $${grandTotal.toFixed(2)}`);
+        }
+    </script>
+
+</body>
+
+</html>
