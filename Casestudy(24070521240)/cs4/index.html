@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Card PIN Verification</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>ATM PIN Verification - 24070521240</h2>
+        <div class="form-group">
+            <label for="pinInput">Enter Customer PIN:</label>
+            <input type="password" id="pinInput" placeholder="Enter PIN (e.g. 4334)" maxlength="8">
+        </div>
+        <button onclick="handleVerification()">Verify PIN</button>
+
+        <div id="output" class="hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Eligibility Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #e9ecef;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Scholarship Eligibility Engine - 24070521240</h2>
+        <form id="scholarshipForm" onsubmit="evaluateEligibility(event)">
+            <div class="form-group">
+                <label for="name">Student Name:</label>
+                <input type="text" id="name" required placeholder="Enter student name">
+            </div>
+
+            <div class="form-group">
+                <label for="score">Academic Score (%):</label>
+                <input type="number" id="score" min="0" max="100" step="0.1" required placeholder="e.g. 85">
+            </div>
+
+            <div class="form-group">
+                <label for="income">Annual Family Income (₹):</label>
+                <input type="number" id="income" min="0" required placeholder="e.g. 250000">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Demographic Category:</label>
+                <select id="category" required>
+                    <option value="">-- Select Category --</option>
+                    <option value="General">General</option>
+                    <option value="OBC">OBC</option>
+                    <option value="SC/ST">SC / ST</option>
+                </select>
+            </div>
+
+            <button type="submit">Check Eligibility</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function evaluateEligibility(event) {
+            event.preventDefault();
+
+            let name = document.getElementById('name').value;
+            let score = parseFloat(document.getElementById('score').value);
+            let income = parseFloat(document.getElementById('income').value);
+            let category = document.getElementById('category').value;
+
+            let resultDiv = document.getElementById('result');
+            let status = "";
+            let scholarshipAmount = "";
+            let color = "black";
+
+            // Conditional logic structure for eligibility matrix
+            if (score >= 90 && income <= 800000) {
+                status = "Eligible for Full Merit Scholarship (100% Tuition Fee Waiver)";
+                color = "green";
+            } else if (score >= 75 && income <= 300000) {
+                status = "Eligible for Need-cum-Merit Scholarship (75% Fee Waiver)";
+                color = "green";
+            } else if (category === "SC/ST" && score >= 60 && income <= 500000) {
+                status = "Eligible for Special Category Support Scheme (60% Fee Waiver)";
+                color = "green";
+            } else if (category === "OBC" && score >= 70 && income <= 400000) {
+                status = "Eligible for Backward Class Assistance Grant (50% Fee Waiver)";
+                color = "green";
+            } else if (score >= 60 && income <= 200000) {
+                status = "Eligible for Financial Assistance Scheme (30% Fee Waiver)";
+                color = "green";
+            } else {
+                status = "Not Eligible for Current Scholarship Schemes.";
+                color = "red";
+            }
+
+            resultDiv.style.display = "block";
+            resultDiv.style.color = color;
+            resultDiv.innerHTML = "<h3>Evaluation Result for " + name + ":</h3>" +
+                "<p><strong>Category:</strong> " + category + "</p>" +
+                "<p><strong>Academic Score:</strong> " + score + "%</p>" +
+                "<p><strong>Annual Income:</strong> ₹" + income + "</p>" +
+                "<p><strong>Status:</strong> " + status + "</p>";
+        }
+    </script>
+
+</body>
+
+</html>

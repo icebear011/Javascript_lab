@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shopping - Bill Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        .container {
+            width: 500px;
+            background: #ffffff;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        fieldset {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+        }
+
+        legend {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: inline-block;
+            width: 170px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 250px;
+            padding: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 3px;
+        }
+
+        #billOutput {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #333;
+            background-color: #fafafa;
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: #eaeaea;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Online Grocery Store</h2>
+        <p style="text-align: center; font-size: 13px; color: #666;">Invoice & Bill Calculator - 24070521240</p>
+        <hr>
+
+        <form id="billForm">
+            <!-- Customer Information -->
+            <fieldset>
+                <legend>Customer Details</legend>
+                <div class="form-group">
+                    <label for="custName">Customer Name:</label>
+                    <input type="text" id="custName" required placeholder="Enter customer name">
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" required placeholder="10-digit mobile number">
+                </div>
+                <div class="form-group">
+                    <label for="invoiceNo">Invoice Number:</label>
+                    <input type="text" id="invoiceNo" required placeholder="e.g. INV-1001">
+                </div>
+                <div class="form-group">
+                    <label for="payMode">Payment Mode:</label>
+                    <select id="payMode">
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="UPI">UPI</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <!-- Product Entry -->
+            <fieldset>
+                <legend>Add Items</legend>
+                <div class="form-group">
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" placeholder="e.g. Rice / Sugar">
+                </div>
+                <div class="form-group">
+                    <label for="qty">Quantity (in Kg):</label>
+                    <input type="number" id="qty" step="0.01" min="0.1" placeholder="e.g. 5">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (₹):</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="e.g. 300">
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" onclick="addItem()" style="background-color: #e7e7e7;">+ Add Item</button>
+                </div>
+
+                <!-- Added Items List Table -->
+                <div id="addedItemsSection" style="display: none; margin-top: 10px;">
+                    <h4 style="margin: 5px 0;">Added Items:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Item</th>
+                                <th>Qty (Kg)</th>
+                                <th>Price (₹)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addedItemsBody"></tbody>
+                    </table>
+                </div>
+            </fieldset>
+
+            <!-- Charges -->
+            <fieldset>
+                <legend>Discounts & Charges</legend>
+                <div class="form-group">
+                    <label for="discount">Discount (%):</label>
+                    <input type="number" id="discount" min="0" max="100" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="packing">Packing Charges (₹):</label>
+                    <input type="number" id="packing" min="0" value="10">
+                </div>
+            </fieldset>
+
+            <div class="btn-container">
+                <button type="button" onclick="calculateBill()"
+                    style="background-color: #4CAF50; color: white;">Calculate Bill</button>
+                <button type="reset" onclick="resetBill()">Reset</button>
+            </div>
+        </form>
+
+        <!-- Bill Invoice Output -->
+        <div id="billOutput">
+            <h3>Invoice Summary</h3>
+            <p><strong>Invoice No:</strong> <span id="outInvoice"></span></p>
+            <p><strong>Customer:</strong> <span id="outName"></span> | <strong>Mobile:</strong> <span
+                    id="outMobile"></span></p>
+            <p><strong>Payment Mode:</strong> <span id="outPayMode"></span></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="outInvoiceItems"></tbody>
+                <tfoot>
+                    <tr>
+                        <td>Subtotal Price</td>
+                        <td>₹<span id="outSubtotal"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Discount (<span id="outDiscountPercent"></span>%)</td>
+                        <td>-₹<span id="outDiscountAmt"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Packing Charges</td>
+                        <td>+₹<span id="outPacking"></span></td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #e6f7ff;">
+                        <td>Final Payable Amount</td>
+                        <td>₹<span id="outFinalTotal"></span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let itemList = [];
+
+        function addItem() {
+            let pName = document.getElementById("productName").value.trim();
+            let qty = parseFloat(document.getElementById("qty").value);
+            let price = parseFloat(document.getElementById("price").value);
+
+            if (!pName || isNaN(qty) || qty <= 0 || isNaN(price) || price < 0) {
+                alert("Please enter valid Product Name, Quantity, and Price!");
+                return;
+            }
+
+            itemList.push({
+                name: pName,
+                qty: qty,
+                price: price
+            });
+
+            // Clear item input fields
+            document.getElementById("productName").value = "";
+            document.getElementById("qty").value = "";
+            document.getElementById("price").value = "";
+
+            renderItemList();
+        }
+
+        function removeItem(index) {
+            itemList.splice(index, 1);
+            renderItemList();
+        }
+
+        function renderItemList() {
+            let tbody = document.getElementById("addedItemsBody");
+            tbody.innerHTML = "";
+
+            itemList.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.qty.toFixed(2)}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                        <td><button type="button" onclick="removeItem(${index})" style="padding:1px 5px; color:red;">X</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("addedItemsSection").style.display = itemList.length > 0 ? "block" : "none";
+        }
+
+        function calculateBill() {
+            let name = document.getElementById("custName").value.trim();
+            let mobile = document.getElementById("mobile").value.trim();
+            let invoice = document.getElementById("invoiceNo").value.trim();
+            let discount = parseFloat(document.getElementById("discount").value) || 0;
+            let packing = parseFloat(document.getElementById("packing").value) || 0;
+            let payMode = document.getElementById("payMode").value;
+
+            if (!name || !mobile || !invoice) {
+                alert("Please fill in Customer Name, Mobile Number, and Invoice Number!");
+                return;
+            }
+
+            if (itemList.length === 0) {
+                alert("Please add at least one item using the '+ Add Item' button!");
+                return;
+            }
+
+            let subtotal = 0;
+            let invoiceItemsHtml = "";
+
+            itemList.forEach((item, i) => {
+                subtotal += item.price;
+                invoiceItemsHtml += `
+                    <tr>
+                        <td>${i + 1}. ${item.name} (${item.qty.toFixed(2)} Kg)</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            let discountAmt = (subtotal * discount) / 100;
+            let priceAfterDiscount = subtotal - discountAmt;
+            let finalTotal = priceAfterDiscount + packing;
+
+            // Output values
+            document.getElementById("outInvoice").innerText = invoice;
+            document.getElementById("outName").innerText = name;
+            document.getElementById("outMobile").innerText = mobile;
+            document.getElementById("outPayMode").innerText = payMode;
+
+            document.getElementById("outInvoiceItems").innerHTML = invoiceItemsHtml;
+            document.getElementById("outSubtotal").innerText = subtotal.toFixed(2);
+            document.getElementById("outDiscountPercent").innerText = discount;
+            document.getElementById("outDiscountAmt").innerText = discountAmt.toFixed(2);
+            document.getElementById("outPacking").innerText = packing.toFixed(2);
+            document.getElementById("outFinalTotal").innerText = finalTotal.toFixed(2);
+
+            document.getElementById("billOutput").style.display = "block";
+        }
+
+        function resetBill() {
+            itemList = [];
+            renderItemList();
+            document.getElementById("billOutput").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
